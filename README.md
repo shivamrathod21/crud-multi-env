@@ -207,6 +207,7 @@ docker logs crud-app
 
 Feel free to fork, improve, and submit pull requests!
 
-## 📄 License
 
-MIT License - feel free to use this project for learning and development!
+
+- feel free to use this project for learning and development!
+Have A goood dayyy!!
