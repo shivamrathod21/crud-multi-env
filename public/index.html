@@ -44,6 +44,9 @@
             background-color: #f9f9f9;
             border-radius: 4px;
         }
+        .button-group {
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -81,8 +84,10 @@
                     <div class="item-content">
                         <h3>${item.name}</h3>
                         <p>${item.description}</p>
-                        <button onclick="showEditForm(${item.id}, '${item.name}', '${item.description}')">Edit</button>
-                        <button onclick="deleteItem(${item.id})">Delete</button>
+                        <div class="button-group">
+                            <button onclick="showEditForm(${item.id})">Edit</button>
+                            <button onclick="deleteItem(${item.id})">Delete</button>
+                        </div>
                     </div>
                     <div class="edit-form" id="edit-form-${item.id}">
                         <div class="form-group">
@@ -93,15 +98,17 @@
                             <label>Description:</label>
                             <textarea id="edit-description-${item.id}">${item.description}</textarea>
                         </div>
-                        <button onclick="updateItem(${item.id})">Save</button>
-                        <button onclick="hideEditForm(${item.id})">Cancel</button>
+                        <div class="button-group">
+                            <button onclick="updateItem(${item.id})">Save</button>
+                            <button onclick="hideEditForm(${item.id})">Cancel</button>
+                        </div>
                     </div>
                 </div>
             `).join('');
         }
 
         // Show edit form
-        function showEditForm(id, name, description) {
+        function showEditForm(id) {
             document.querySelector(`#item-${id} .edit-form`).style.display = 'block';
         }
 

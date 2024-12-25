@@ -1,4 +1,4 @@
-FROM node:16
+FROM node:18-alpine
 
 WORKDIR /app
 
@@ -10,6 +10,9 @@ RUN npm install
 
 # Copy the rest of the application
 COPY . .
+
+ARG DATABASE_URL
+ENV DATABASE_URL=$DATABASE_URL
 
 # Expose port
 EXPOSE 3000
