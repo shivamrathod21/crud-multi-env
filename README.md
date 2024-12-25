@@ -11,6 +11,86 @@ A demonstration of DevOps practices using a simple CRUD application with automat
 - **CI/CD**: GitHub Actions
 - **Containerization**: Docker
 
+## 📋 Complete Command Reference
+
+### AWS EC2 Commands
+```bash
+# SSH into EC2
+ssh -i "your-key.pem" ubuntu@your-ec2-ip
+
+# Check Docker status
+sudo systemctl status docker
+
+# View running containers
+docker ps
+
+# View container logs
+docker logs crud-app
+
+# Restart container
+docker restart crud-app
+```
+
+### Database Access Commands
+```bash
+# Install PostgreSQL client on EC2
+sudo apt update
+sudo apt install postgresql-client -y
+
+# Connect to RDS database
+psql "postgres://crudadmin:your_password@your-rds-endpoint:5432/postgres"
+
+# Inside PostgreSQL prompt:
+\dt                        # List all tables
+SELECT * FROM "Items";     # View all items
+\q                        # Exit PostgreSQL
+```
+
+### Docker Commands
+```bash
+# Build image
+docker build -t crud-app .
+
+# Run container
+docker run -d --name crud-app \
+  -p 3000:3000 \
+  -e DATABASE_URL="your_database_url" \
+  crud-app
+
+# Stop container
+docker stop crud-app
+
+# Remove container
+docker rm crud-app
+
+# View logs
+docker logs -f crud-app
+```
+
+### GitHub Actions Commands
+```bash
+# Trigger workflow manually
+gh workflow run deploy.yml
+
+# View workflow status
+gh run list
+
+# View workflow logs
+gh run view [run-id]
+```
+
+### Local Development Commands
+```bash
+# Install dependencies
+npm install
+
+# Run locally
+npm start
+
+# Run with nodemon
+npm run dev
+```
+
 ## 🛠️ Prerequisites
 
 1. AWS Account with:
@@ -36,65 +116,41 @@ A demonstration of DevOps practices using a simple CRUD application with automat
 
 ### 1. AWS RDS Setup
 ```bash
-# Note your database endpoint, username, and password
-DATABASE_URL=postgres://username:password@your-rds-endpoint:5432/postgres
+# Format for DATABASE_URL
+postgres://username:password@your-rds-endpoint:5432/postgres
+
+# Security Group Rules:
+- Type: PostgreSQL
+- Port: 5432
+- Source: EC2 Security Group ID
 ```
 
 ### 2. AWS EC2 Setup
 ```bash
-# Generate SSH key pair
-ssh-keygen -t rsa -b 4096
-
-# Configure security group
-- Allow inbound port 22 (SSH)
-- Allow inbound port 3000 (Application)
+# Security Group Rules:
+- Allow SSH (22)
+- Allow Application (3000)
 ```
 
 ### 3. GitHub Actions Setup
-1. Fork this repository
-2. Add required secrets
-3. Enable GitHub Actions
-
-## 🚀 Local Development
-
-```bash
-# Clone repository
-git clone https://github.com/yourusername/crud-deployment.git
-cd crud-deployment
-
-# Install dependencies
-npm install
-
-# Create .env file
-echo "DATABASE_URL=your_database_url" > .env
-
-# Run locally
-npm start
-```
-
-## 📦 Docker Commands
-
-```bash
-# Build image
-docker build -t crud-app .
-
-# Run container
-docker run -p 3000:3000 -e DATABASE_URL=your_database_url crud-app
-```
+1. Fork repository
+2. Add secrets
+3. Enable Actions
 
 ## 🔐 Security Configuration
 
 1. RDS Security Group:
-   - Allow port 5432 from EC2 security group
-   - Configure proper inbound rules
+   ```
+   Inbound Rules:
+   - PostgreSQL (5432) from EC2 Security Group
+   ```
 
 2. EC2 Security Group:
-   - Allow SSH (22)
-   - Allow application port (3000)
-
-3. GitHub Secrets:
-   - All sensitive data stored in GitHub Secrets
-   - No hardcoded credentials
+   ```
+   Inbound Rules:
+   - SSH (22) from Your IP
+   - Custom TCP (3000) from 0.0.0.0/0
+   ```
 
 ## 📝 Database Schema
 
@@ -107,25 +163,40 @@ Table: Items
 - updatedAt: Timestamp
 ```
 
-## 🔄 CI/CD Pipeline
-
-1. Push to main branch triggers workflow
-2. GitHub Actions:
-   - Builds Docker image
-   - Pushes to Docker Hub
-   - Deploys to EC2
-
 ## 🛟 Troubleshooting
 
-1. Database Connection Issues:
-   - Verify RDS security group rules
-   - Check DATABASE_URL format
-   - Ensure EC2 has access to RDS
+### Database Connection Issues
+```bash
+# Check RDS connectivity from EC2
+nc -zv your-rds-endpoint 5432
 
-2. Deployment Issues:
-   - Check GitHub Actions logs
-   - Verify EC2 instance is running
-   - Confirm Docker Hub credentials
+# Check database logs
+docker logs crud-app | grep database
+
+# Test database connection
+psql "postgres://crudadmin:password@endpoint:5432/postgres" -c "\dt"
+```
+
+### Container Issues
+```bash
+# Check container status
+docker ps -a
+
+# View container logs
+docker logs crud-app
+
+# Restart container
+docker restart crud-app
+```
+
+### GitHub Actions Issues
+```bash
+# Check workflow logs in GitHub UI
+Actions → Workflows → Latest Run
+
+# Check EC2 deployment logs
+docker logs crud-app
+```
 
 ## 📚 Additional Resources
 
