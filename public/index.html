@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple CRUD App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .item {
+            border: 1px solid #ddd;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Simple CRUD App</h1>
+    
+    <div id="addForm">
+        <h2>Add New Item</h2>
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" id="name" required>
+        </div>
+        <div class="form-group">
+            <label for="description">Description:</label>
+            <textarea id="description" required></textarea>
+        </div>
+        <button onclick="addItem()">Add Item</button>
+    </div>
+
+    <h2>Items</h2>
+    <div id="itemsList"></div>
+
+    <script>
+        // Fetch all items
+        async function fetchItems() {
+            const response = await fetch('/api/items');
+            const items = await response.json();
+            displayItems(items);
+        }
+
+        // Display items
+        function displayItems(items) {
+            const itemsList = document.getElementById('itemsList');
+            itemsList.innerHTML = items.map(item => `
+                <div class="item">
+                    <h3>${item.name}</h3>
+                    <p>${item.description}</p>
+                    <button onclick="deleteItem(${item.id})">Delete</button>
+                </div>
+            `).join('');
+        }
+
+        // Add new item
+        async function addItem() {
+            const name = document.getElementById('name').value;
+            const description = document.getElementById('description').value;
+            
+            await fetch('/api/items', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ name, description }),
+            });
+
+            // Clear form
+            document.getElementById('name').value = '';
+            document.getElementById('description').value = '';
+            
+            // Refresh items list
+            fetchItems();
+        }
+
+        // Delete item
+        async function deleteItem(id) {
+            await fetch(`/api/items/${id}`, {
+                method: 'DELETE',
+            });
+            fetchItems();
+        }
+
+        // Initial load
+        fetchItems();
+    </script>
+</body>
+</html>
