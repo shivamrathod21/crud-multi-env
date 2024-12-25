@@ -10,7 +10,27 @@ A demonstration of DevOps practices using a simple CRUD application with automat
 - **Deployment**: AWS EC2
 - **CI/CD**: GitHub Actions
 - **Containerization**: Docker
+    ```
+## 🛠️ Prerequisites
 
+1. AWS Account with:
+   - EC2 instance running
+   - RDS PostgreSQL database
+   - IAM user with appropriate permissions
+
+2. GitHub Account with:
+   - Fork of this repository
+   - Following secrets configured:
+     ```
+     AWS_ACCESS_KEY_ID
+     AWS_SECRET_ACCESS_KEY
+     DOCKER_USERNAME
+     DOCKER_PASSWORD
+     EC2_HOST
+     EC2_USERNAME
+     SSH_PRIVATE_KEY
+     DATABASE_URL
+     ```
 ## 📋 Complete Command Reference
 
 ### AWS EC2 Commands
@@ -90,27 +110,6 @@ npm start
 # Run with nodemon
 npm run dev
 ```
-
-## 🛠️ Prerequisites
-
-1. AWS Account with:
-   - EC2 instance running
-   - RDS PostgreSQL database
-   - IAM user with appropriate permissions
-
-2. GitHub Account with:
-   - Fork of this repository
-   - Following secrets configured:
-     ```
-     AWS_ACCESS_KEY_ID
-     AWS_SECRET_ACCESS_KEY
-     DOCKER_USERNAME
-     DOCKER_PASSWORD
-     EC2_HOST
-     EC2_USERNAME
-     SSH_PRIVATE_KEY
-     DATABASE_URL
-     ```
 
 ## 🏗️ Infrastructure Setup
 
