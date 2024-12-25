@@ -1,57 +1,142 @@
-# CRUD Application Deployment
+# DevOps CRUD Application Deployment
 
-This repository contains the deployment configuration for the CRUD application.
+A demonstration of DevOps practices using a simple CRUD application with automated deployment pipeline.
 
-## Prerequisites
+## 🚀 Architecture Overview
 
-1. AWS Account
-2. Docker Hub Account
-3. GitHub Account
-4. EC2 Instance
-5. Docker installed on EC2
+- **Frontend**: Simple HTML/JS interface
+- **Backend**: Node.js/Express API
+- **Database**: AWS RDS (PostgreSQL)
+- **Deployment**: AWS EC2
+- **CI/CD**: GitHub Actions
+- **Containerization**: Docker
 
-## Setup Instructions
+## 🛠️ Prerequisites
 
-### 1. GitHub Secrets
+1. AWS Account with:
+   - EC2 instance running
+   - RDS PostgreSQL database
+   - IAM user with appropriate permissions
 
-Add the following secrets to your GitHub repository:
+2. GitHub Account with:
+   - Fork of this repository
+   - Following secrets configured:
+     ```
+     AWS_ACCESS_KEY_ID
+     AWS_SECRET_ACCESS_KEY
+     DOCKER_USERNAME
+     DOCKER_PASSWORD
+     EC2_HOST
+     EC2_USERNAME
+     SSH_PRIVATE_KEY
+     DATABASE_URL
+     ```
 
-- `AWS_ACCESS_KEY_ID`: Your AWS access key
-- `AWS_SECRET_ACCESS_KEY`: Your AWS secret key
-- `DOCKER_USERNAME`: Your Docker Hub username
-- `DOCKER_PASSWORD`: Your Docker Hub password
-- `EC2_HOST`: Your EC2 instance public IP
-- `EC2_USERNAME`: EC2 instance username (usually 'ec2-user' or 'ubuntu')
-- `SSH_PRIVATE_KEY`: Your EC2 instance SSH private key
+## 🏗️ Infrastructure Setup
 
-### 2. EC2 Setup
-
-1. Launch an EC2 instance (t2.micro or larger)
-2. Install Docker:
+### 1. AWS RDS Setup
 ```bash
-sudo yum update -y
-sudo yum install docker -y
-sudo service docker start
-sudo usermod -a -G docker ec2-user
+# Note your database endpoint, username, and password
+DATABASE_URL=postgres://username:password@your-rds-endpoint:5432/postgres
 ```
 
-### 3. Security Group Configuration
-
-Ensure your EC2 security group allows:
-- SSH (Port 22)
-- HTTP (Port 80)
-- Application Port (3000)
-
-### 4. Deployment
-
-The application will automatically deploy when you push to the main branch.
-
-## Local Testing
-
-To test locally:
-
+### 2. AWS EC2 Setup
 ```bash
-docker-compose up --build
+# Generate SSH key pair
+ssh-keygen -t rsa -b 4096
+
+# Configure security group
+- Allow inbound port 22 (SSH)
+- Allow inbound port 3000 (Application)
 ```
 
-Access the application at http://localhost:3000
+### 3. GitHub Actions Setup
+1. Fork this repository
+2. Add required secrets
+3. Enable GitHub Actions
+
+## 🚀 Local Development
+
+```bash
+# Clone repository
+git clone https://github.com/yourusername/crud-deployment.git
+cd crud-deployment
+
+# Install dependencies
+npm install
+
+# Create .env file
+echo "DATABASE_URL=your_database_url" > .env
+
+# Run locally
+npm start
+```
+
+## 📦 Docker Commands
+
+```bash
+# Build image
+docker build -t crud-app .
+
+# Run container
+docker run -p 3000:3000 -e DATABASE_URL=your_database_url crud-app
+```
+
+## 🔐 Security Configuration
+
+1. RDS Security Group:
+   - Allow port 5432 from EC2 security group
+   - Configure proper inbound rules
+
+2. EC2 Security Group:
+   - Allow SSH (22)
+   - Allow application port (3000)
+
+3. GitHub Secrets:
+   - All sensitive data stored in GitHub Secrets
+   - No hardcoded credentials
+
+## 📝 Database Schema
+
+```sql
+Table: Items
+- id: Serial Primary Key
+- name: String
+- description: Text
+- createdAt: Timestamp
+- updatedAt: Timestamp
+```
+
+## 🔄 CI/CD Pipeline
+
+1. Push to main branch triggers workflow
+2. GitHub Actions:
+   - Builds Docker image
+   - Pushes to Docker Hub
+   - Deploys to EC2
+
+## 🛟 Troubleshooting
+
+1. Database Connection Issues:
+   - Verify RDS security group rules
+   - Check DATABASE_URL format
+   - Ensure EC2 has access to RDS
+
+2. Deployment Issues:
+   - Check GitHub Actions logs
+   - Verify EC2 instance is running
+   - Confirm Docker Hub credentials
+
+## 📚 Additional Resources
+
+- [AWS RDS Documentation](https://docs.aws.amazon.com/rds/)
+- [GitHub Actions Documentation](https://docs.github.com/en/actions)
+- [Docker Documentation](https://docs.docker.com/)
+
+## 🤝 Contributing
+
+Feel free to fork, improve, and submit pull requests!
+
+## 📄 License
+
+MIT License - feel free to use this project for learning and development!
