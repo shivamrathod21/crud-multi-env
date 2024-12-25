@@ -32,9 +32,17 @@
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            margin-right: 5px;
         }
         button:hover {
             background-color: #45a049;
+        }
+        .edit-form {
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
         }
     </style>
 </head>
@@ -69,12 +77,54 @@
         function displayItems(items) {
             const itemsList = document.getElementById('itemsList');
             itemsList.innerHTML = items.map(item => `
-                <div class="item">
-                    <h3>${item.name}</h3>
-                    <p>${item.description}</p>
-                    <button onclick="deleteItem(${item.id})">Delete</button>
+                <div class="item" id="item-${item.id}">
+                    <div class="item-content">
+                        <h3>${item.name}</h3>
+                        <p>${item.description}</p>
+                        <button onclick="showEditForm(${item.id}, '${item.name}', '${item.description}')">Edit</button>
+                        <button onclick="deleteItem(${item.id})">Delete</button>
+                    </div>
+                    <div class="edit-form" id="edit-form-${item.id}">
+                        <div class="form-group">
+                            <label>Name:</label>
+                            <input type="text" id="edit-name-${item.id}" value="${item.name}">
+                        </div>
+                        <div class="form-group">
+                            <label>Description:</label>
+                            <textarea id="edit-description-${item.id}">${item.description}</textarea>
+                        </div>
+                        <button onclick="updateItem(${item.id})">Save</button>
+                        <button onclick="hideEditForm(${item.id})">Cancel</button>
+                    </div>
                 </div>
             `).join('');
+        }
+
+        // Show edit form
+        function showEditForm(id, name, description) {
+            document.querySelector(`#item-${id} .edit-form`).style.display = 'block';
+        }
+
+        // Hide edit form
+        function hideEditForm(id) {
+            document.querySelector(`#item-${id} .edit-form`).style.display = 'none';
+        }
+
+        // Update item
+        async function updateItem(id) {
+            const name = document.getElementById(`edit-name-${id}`).value;
+            const description = document.getElementById(`edit-description-${id}`).value;
+            
+            await fetch(`/api/items/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ name, description }),
+            });
+
+            hideEditForm(id);
+            fetchItems();
         }
 
         // Add new item
@@ -101,7 +151,7 @@
         // Delete item
         async function deleteItem(id) {
             await fetch(`/api/items/${id}`, {
-                method: 'DELETE',
+                method: 'DELETE'
             });
             fetchItems();
         }
