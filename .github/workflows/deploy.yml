@@ -17,6 +17,11 @@ jobs:
         with:
           node-version: '18'
           
+      - name: Create test env file
+        run: |
+          echo "DATABASE_URL=sqlite::memory:" > .env.test
+          echo "NODE_ENV=test" >> .env.test
+          
       - name: Install dependencies
         run: |
           npm install
