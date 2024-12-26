@@ -1,22 +1,15 @@
 const express = require('express');
+const path = require('path');
 const sequelize = require('./config/database');
 const Item = require('./models/item')(sequelize);
 const app = express();
 
 app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Welcome page
 app.get('/', (req, res) => {
-    res.json({
-        message: 'Welcome to the CRUD API',
-        endpoints: {
-            getAllItems: 'GET /api/items',
-            getOneItem: 'GET /api/items/:id',
-            createItem: 'POST /api/items',
-            updateItem: 'PUT /api/items/:id',
-            deleteItem: 'DELETE /api/items/:id'
-        }
-    });
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // Routes

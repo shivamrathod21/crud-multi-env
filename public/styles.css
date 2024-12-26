@@ -1,0 +1,64 @@
+/* Custom animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.container {
+    animation: fadeIn 0.5s ease-in;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Smooth transitions */
+button {
+    transition: all 0.2s ease-in-out !important;
+}
+
+button:hover {
+    transform: translateY(-1px);
+}
+
+/* Input focus effects */
+input:focus, textarea:focus {
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2) !important;
+}
+
+/* Modal animation */
+#editModal {
+    transition: opacity 0.3s ease-in-out;
+}
+
+#editModal.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+#editModal:not(.hidden) {
+    opacity: 1;
+}
+
+/* Card hover effects */
+.bg-white {
+    transition: transform 0.2s ease-in-out;
+}
+
+.bg-white:hover {
+    transform: translateY(-2px);
+}
