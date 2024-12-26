@@ -65,9 +65,9 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             docker pull ${{ secrets.DOCKER_USERNAME }}/crud-app:${{ github.sha }}
-            docker stop crud-app || true
-            docker rm crud-app || true
-            docker run -d --name crud-app \
-              -p 3000:3000 \
+            docker stop crud-app-prod || true
+            docker rm crud-app-prod || true
+            docker run -d --name crud-app-prod \
+              -p 3001:3000 \
               -e DATABASE_URL="${{ secrets.DATABASE_URL }}" \
               ${{ secrets.DOCKER_USERNAME }}/crud-app:${{ github.sha }}
