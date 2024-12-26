@@ -10,7 +10,7 @@ A demonstration of DevOps practices using a simple CRUD application with automat
 - **Deployment**: AWS EC2
 - **CI/CD**: GitHub Actions
 - **Containerization**: Docker
-    ```
+
 ## 🛠️ Prerequisites
 
 1. AWS Account with:
@@ -31,6 +31,7 @@ A demonstration of DevOps practices using a simple CRUD application with automat
      SSH_PRIVATE_KEY
      DATABASE_URL
      ```
+
 ## 📋 Complete Command Reference
 
 ### AWS EC2 Commands
@@ -207,7 +208,137 @@ docker logs crud-app
 
 Feel free to fork, improve, and submit pull requests!
 
+---
 
+# Multi-Environment CRUD Application
+
+Enhanced version of the CRUD application with multiple environments and testing.
+
+## 🚀 Environments
+
+### Development (Port 3000)
+```bash
+# Run development environment
+docker-compose up dev
+```
+
+### Production (Port 3001)
+```bash
+# Run production environment
+docker-compose up prod
+```
+
+### Testing
+```bash
+# Run tests
+docker-compose up test
+
+# View test results in terminal
+npm test
+
+# Generate and view coverage report
+npm run test:coverage
+```
+
+## 🔍 Viewing Test Results
+
+1. **Terminal Output**:
+   ```bash
+   npm test
+   ```
+   Shows:
+   - Number of tests passed/failed
+   - Error details if any
+   - Test execution time
+
+2. **Coverage Report**:
+   ```bash
+   npm run test:coverage
+   ```
+   Creates `coverage` directory with:
+   - Detailed HTML report
+   - Percentage of code covered
+   - Uncovered lines
+
+3. **GitHub Actions**:
+   - Go to Actions tab
+   - Click on latest workflow run
+   - See "Run tests" step
+   - Download coverage artifact
+
+## 🏗️ Infrastructure Setup
+
+Using existing infrastructure from original project:
+
+1. **EC2 Instance**:
+   - Same instance
+   - Added port 3001 for production
+   - Original app runs on 3000
+
+2. **RDS Database**:
+   - Same database
+   - Different table names
+   - Same connection string
+
+3. **Security Group Updates**:
+   ```
+   Inbound Rules:
+   - Port 3000 (Original app)
+   - Port 3001 (This app)
+   - Port 22 (SSH)
+   ```
+
+## 🚀 Deployment
+
+1. **GitHub Actions**:
+   - Runs tests first
+   - Only deploys if tests pass
+   - Uses production Dockerfile
+
+2. **Access Applications**:
+   - Development: http://your-ec2-ip:3000
+   - Production: http://your-ec2-ip:3001
+
+## 📊 Test Coverage
+
+View test coverage:
+1. Locally:
+   ```bash
+   npm run test:coverage
+   open coverage/lcov-report/index.html
+   ```
+
+2. GitHub Actions:
+   - Go to Actions tab
+   - Download coverage artifact
+   - Open index.html
+
+## 🔐 Environment Variables
+
+Same as original project:
+```
+DATABASE_URL=postgres://username:password@endpoint:5432/postgres
+```
+
+## 🛠️ Development Workflow
+
+1. Make changes
+2. Run tests locally:
+   ```bash
+   npm test
+   ```
+3. Push to GitHub
+4. GitHub Actions:
+   - Runs tests
+   - Generates coverage report
+   - Deploys if on main branch
+
+## 📝 Notes
+
+- Original app runs on port 3000
+- This version runs on port 3001
+- Both use same RDS database
+- Tests run in isolated environment
 
 - feel free to use this project for learning and development!
 Have A goood dayyy!!

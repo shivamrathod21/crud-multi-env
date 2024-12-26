@@ -1,0 +1,22 @@
+# Development Dockerfile
+FROM node:18
+
+WORKDIR /app
+
+# Install nodemon for development (hot-reloading)
+RUN npm install -g nodemon
+
+# Copy package files
+COPY package*.json ./
+
+# Install all dependencies (including devDependencies)
+RUN npm install
+
+# Copy source code
+COPY . .
+
+# Expose port
+EXPOSE 3000
+
+# Use nodemon for development
+CMD ["npm", "run", "dev"]

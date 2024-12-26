@@ -1,0 +1,22 @@
+# Testing Dockerfile
+FROM node:18
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install all dependencies
+RUN npm install
+
+# Install sqlite3 for testing
+RUN npm install sqlite3 --save-dev
+
+# Copy source code
+COPY . .
+
+# Set environment to test
+ENV NODE_ENV=test
+
+# Run tests
+CMD ["npm", "test"]

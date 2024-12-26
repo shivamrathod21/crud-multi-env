@@ -1,8 +1,35 @@
-version: '3'
+version: '3.8'
 services:
-  app:
-    build: .
+  # Development environment
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
     ports:
       - "3000:3000"
     environment:
+      - DATABASE_URL=${DATABASE_URL}
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm run dev
+
+  # Production environment
+  prod:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    ports:
+      - "3001:3000"
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
       - NODE_ENV=production
+
+  # Testing environment
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+    command: npm test
