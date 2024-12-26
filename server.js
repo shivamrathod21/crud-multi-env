@@ -5,6 +5,20 @@ const app = express();
 
 app.use(express.json());
 
+// Welcome page
+app.get('/', (req, res) => {
+    res.json({
+        message: 'Welcome to the CRUD API',
+        endpoints: {
+            getAllItems: 'GET /api/items',
+            getOneItem: 'GET /api/items/:id',
+            createItem: 'POST /api/items',
+            updateItem: 'PUT /api/items/:id',
+            deleteItem: 'DELETE /api/items/:id'
+        }
+    });
+});
+
 // Routes
 app.get('/api/items', async (req, res) => {
     try {
@@ -63,6 +77,12 @@ app.delete('/api/items/:id', async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ error: 'Something broke!' });
 });
 
 // Sync database and start server

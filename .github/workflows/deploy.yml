@@ -24,13 +24,14 @@ jobs:
           
       - name: Install dependencies
         run: |
+          rm -rf node_modules package-lock.json
           npm install
-          npm ci
-        
+          npm install --save-dev jest supertest sqlite3
+          npm install --save express sequelize dotenv pg
+          
       - name: Run tests
         run: |
-          npm install --save-dev jest supertest sqlite3
-          npm test
+          NODE_ENV=test npm test
 
   deploy:
     needs: test
