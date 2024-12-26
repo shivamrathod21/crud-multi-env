@@ -573,4 +573,4 @@ DATABASE_URL=postgres://username:password@endpoint:5432/postgres
 - Tests run in isolated environment
 
 - feel free to use this project for learning and development!
-Have A goood dayyy!!
+Have A goood dayyy!!!!! 🚀
