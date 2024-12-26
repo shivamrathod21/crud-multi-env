@@ -1,60 +1,72 @@
 const request = require('supertest');
-const express = require('express');
-const { Sequelize } = require('sequelize');
-const ItemModel = require('../models/item');
+const { app, sequelize } = require('../server');
+const Item = require('../models/item')(sequelize);
 
-describe('API Tests', () => {
-    let app;
-    let sequelize;
-    let Item;
+beforeAll(async () => {
+  await sequelize.sync({ force: true });
+});
 
-    beforeAll(async () => {
-        // Setup test database
-        sequelize = new Sequelize('sqlite::memory:');
-        Item = ItemModel(sequelize);
-        await sequelize.sync();
+afterAll(async () => {
+  await sequelize.close();
+});
 
-        // Setup express app
-        app = express();
-        app.use(express.json());
+beforeEach(async () => {
+  await Item.destroy({ where: {} });
+});
 
-        // Setup routes
-        app.post('/api/items', async (req, res) => {
-            try {
-                const item = await Item.create(req.body);
-                res.status(201).json(item);
-            } catch (error) {
-                res.status(400).json({ error: error.message });
-            }
-        });
+describe('Item API', () => {
+  test('POST /api/items - Create an item', async () => {
+    const res = await request(app)
+      .post('/api/items')
+      .send({ name: 'Test Item', description: 'Test Description' });
+    
+    expect(res.statusCode).toBe(201);
+    expect(res.body.name).toBe('Test Item');
+    expect(res.body.description).toBe('Test Description');
+  });
 
-        app.get('/api/items', async (req, res) => {
-            const items = await Item.findAll();
-            res.json(items);
-        });
-    });
+  test('GET /api/items - Get all items', async () => {
+    await Item.create({ name: 'Test Item 1', description: 'Test Description 1' });
+    await Item.create({ name: 'Test Item 2', description: 'Test Description 2' });
 
-    afterAll(async () => {
-        await sequelize.close();
-    });
+    const res = await request(app).get('/api/items');
+    
+    expect(res.statusCode).toBe(200);
+    expect(res.body.length).toBe(2);
+    expect(res.body[0].name).toBe('Test Item 1');
+    expect(res.body[1].name).toBe('Test Item 2');
+  });
 
-    it('should create a new item', async () => {
-        const response = await request(app)
-            .post('/api/items')
-            .send({
-                name: 'Test Item',
-                description: 'Test Description'
-            });
+  test('GET /api/items/:id - Get a single item', async () => {
+    const item = await Item.create({ name: 'Test Item', description: 'Test Description' });
 
-        expect(response.status).toBe(201);
-        expect(response.body.name).toBe('Test Item');
-    });
+    const res = await request(app).get(`/api/items/${item.id}`);
+    
+    expect(res.statusCode).toBe(200);
+    expect(res.body.name).toBe('Test Item');
+    expect(res.body.description).toBe('Test Description');
+  });
 
-    it('should get all items', async () => {
-        const response = await request(app)
-            .get('/api/items');
+  test('PUT /api/items/:id - Update an item', async () => {
+    const item = await Item.create({ name: 'Test Item', description: 'Test Description' });
 
-        expect(response.status).toBe(200);
-        expect(Array.isArray(response.body)).toBe(true);
-    });
+    const res = await request(app)
+      .put(`/api/items/${item.id}`)
+      .send({ name: 'Updated Item', description: 'Updated Description' });
+    
+    expect(res.statusCode).toBe(200);
+    expect(res.body.name).toBe('Updated Item');
+    expect(res.body.description).toBe('Updated Description');
+  });
+
+  test('DELETE /api/items/:id - Delete an item', async () => {
+    const item = await Item.create({ name: 'Test Item', description: 'Test Description' });
+
+    const res = await request(app).delete(`/api/items/${item.id}`);
+    
+    expect(res.statusCode).toBe(204);
+
+    const deletedItem = await Item.findByPk(item.id);
+    expect(deletedItem).toBeNull();
+  });
 });

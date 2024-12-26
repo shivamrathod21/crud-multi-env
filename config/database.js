@@ -1,22 +1,21 @@
 const { Sequelize } = require('sequelize');
 
-const createSequelize = () => {
-    if (process.env.NODE_ENV === 'test') {
-        return new Sequelize('sqlite::memory:', {
-            logging: false
-        });
+let sequelize;
+
+if (process.env.NODE_ENV === 'test') {
+  sequelize = new Sequelize('sqlite::memory:', {
+    logging: false // Disable logging for tests
+  });
+} else {
+  sequelize = new Sequelize(process.env.DATABASE_URL, {
+    dialect: 'postgres',
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false
+      }
     }
+  });
+}
 
-    return new Sequelize(process.env.DATABASE_URL, {
-        dialect: 'postgres',
-        dialectOptions: {
-            ssl: {
-                require: true,
-                rejectUnauthorized: false
-            }
-        },
-        logging: console.log
-    });
-};
-
-module.exports = createSequelize;
+module.exports = sequelize;
